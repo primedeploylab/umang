@@ -340,10 +340,10 @@ const generateFingerprint = async (filePath, songUrl = null) => {
 };
 
 /**
- * FAST: Get YouTube video title using oEmbed API (no yt-dlp needed)
+ * FAST: Get YouTube video info using oEmbed API (no yt-dlp needed)
  * This is instant and doesn't require any external tools
  */
-const getYouTubeTitleFast = (url) => {
+const getYouTubeInfoFast = (url) => {
   return new Promise((resolve) => {
     const videoId = getYouTubeVideoId(url);
     if (!videoId) {
@@ -359,7 +359,10 @@ const getYouTubeTitleFast = (url) => {
       res.on('end', () => {
         try {
           const json = JSON.parse(data);
-          resolve(json.title || null);
+          resolve({
+            title: json.title || null,
+            author: json.author_name || null
+          });
         } catch (e) {
           resolve(null);
         }
@@ -372,13 +375,92 @@ const getYouTubeTitleFast = (url) => {
 };
 
 /**
+ * Check if a YouTube video is likely a music/song video
+ * Returns { isMusic: boolean, reason: string }
+ */
+const checkIfMusicVideo = async (url) => {
+  const info = await getYouTubeInfoFast(url);
+  if (!info || !info.title) {
+    return { isMusic: false, reason: 'Could not fetch video info' };
+  }
+
+  const title = info.title.toLowerCase();
+  const author = (info.author || '').toLowerCase();
+
+  // Music-related keywords in title
+  const musicKeywords = [
+    'song', 'music', 'audio', 'lyric', 'lyrics', 'official', 'video', 'mv',
+    'full song', 'jukebox', 'album', 'soundtrack', 'ost', 'remix', 'cover',
+    'गाना', 'गीत', 'संगीत', // Hindi
+    'bollywood', 'hindi', 'punjabi', 'bhojpuri', 'tamil', 'telugu', 'kannada',
+    't-series', 'zee music', 'sony music', 'tips', 'saregama', 'yrf', 'eros',
+    'gaana', 'wynk', 'hungama', 'jiosaavn'
+  ];
+
+  // Music channel indicators
+  const musicChannels = [
+    't-series', 'zee music', 'sony music', 'tips official', 'saregama', 
+    'yrf', 'eros now', 'speed records', 'desi music', 'venus', 'shemaroo',
+    'ultra music', 'aditya music', 'lahari music', 'mango music', 'anand audio',
+    'vevo', 'music', 'records', 'entertainment'
+  ];
+
+  // Non-music indicators (likely not a song)
+  const nonMusicKeywords = [
+    'vlog', 'tutorial', 'how to', 'review', 'unboxing', 'gameplay', 'gaming',
+    'news', 'podcast', 'interview', 'reaction', 'prank', 'challenge', 'cooking',
+    'recipe', 'diy', 'makeup', 'haul', 'asmr', 'documentary', 'lecture',
+    'course', 'class', 'lesson', 'webinar', 'meeting', 'conference'
+  ];
+
+  // Check for non-music content first
+  for (const keyword of nonMusicKeywords) {
+    if (title.includes(keyword)) {
+      return { isMusic: false, reason: `This appears to be a ${keyword} video, not a song` };
+    }
+  }
+
+  // Check for music keywords in title
+  for (const keyword of musicKeywords) {
+    if (title.includes(keyword)) {
+      return { isMusic: true, reason: 'Music keyword found in title' };
+    }
+  }
+
+  // Check for music channel
+  for (const channel of musicChannels) {
+    if (author.includes(channel)) {
+      return { isMusic: true, reason: 'From a music channel' };
+    }
+  }
+
+  // Check for common song title patterns
+  const songPatterns = [
+    /[-|:]\s*(full|official|lyric|audio|video)/i,
+    /\(.*?(song|video|audio|lyric).*?\)/i,
+    /ft\.|feat\.|featuring/i,
+    /[🎵🎶🎤🎸🎹]/
+  ];
+
+  for (const pattern of songPatterns) {
+    if (pattern.test(info.title)) {
+      return { isMusic: true, reason: 'Song pattern found in title' };
+    }
+  }
+
+  // If nothing matches, it's uncertain - allow but warn
+  return { isMusic: true, reason: 'Could not verify, allowing anyway' };
+};
+
+/**
  * Extract song metadata from YouTube URL (title, description, hashtags)
  * FAST VERSION: Uses oEmbed API first (instant), falls back to yt-dlp only if needed
  */
 const extractSongMetadata = async (songUrl) => {
   try {
     // FAST: Try oEmbed API first (instant, no external tools)
-    const fastTitle = await getYouTubeTitleFast(songUrl);
+    const fastInfo = await getYouTubeInfoFast(songUrl);
+    const fastTitle = fastInfo?.title;
     
     if (fastTitle) {
       const extractedSongs = [];
@@ -571,5 +653,7 @@ module.exports = {
   getYouTubeVideoDetails,
   extractSongFromMetadata,
   normalizeSongName,
-  areSongNamesSimilar
+  areSongNamesSimilar,
+  checkIfMusicVideo,
+  getYouTubeInfoFast
 };

@@ -34,6 +34,16 @@ const clearFormData = (linkId) => {
   localStorage.removeItem(`dmart_form_${linkId}`);
 };
 
+// Save submission ID after successful submission
+const saveSubmissionId = (linkId, submissionId) => {
+  localStorage.setItem(`dmart_submitted_${linkId}`, submissionId);
+};
+
+// Get saved submission ID
+const getSubmissionId = (linkId) => {
+  return localStorage.getItem(`dmart_submitted_${linkId}`);
+};
+
 function SubmitForm() {
   const { linkId } = useParams();
   const [valid, setValid] = useState(null);
@@ -51,7 +61,9 @@ function SubmitForm() {
   // Verified songs list (multiple songs)
   const [verifiedSongs, setVerifiedSongs] = useState([]);
   
-
+  // Already submitted state
+  const [existingSubmission, setExistingSubmission] = useState(null);
+  const [editMode, setEditMode] = useState(false);
   
   // Step: 1 = Add Songs, 2 = Fill Details
   const [step, setStep] = useState(1);
@@ -70,14 +82,49 @@ function SubmitForm() {
 
   // Load saved data on mount
   useEffect(() => {
-    const saved = loadFormData(linkId);
-    if (saved) {
-      if (saved.verifiedSongs) setVerifiedSongs(saved.verifiedSongs);
-      if (saved.form) setForm(saved.form);
-      if (saved.members) setMembers(saved.members);
-      if (saved.step) setStep(saved.step);
-      if (saved.currentLink) setCurrentLink(saved.currentLink);
-    }
+    const checkExistingSubmission = async () => {
+      const submissionId = getSubmissionId(linkId);
+      if (submissionId) {
+        try {
+          const { data } = await axios.get(`/api/submissions/by-id/${submissionId}`);
+          if (data) {
+            setExistingSubmission(data);
+            // Load existing data into form for editing
+            const songs = data.songs?.length > 0 ? data.songs : 
+              (data.youtubeLink ? [{ songName: data.songName, youtubeLink: data.youtubeLink }] : []);
+            setVerifiedSongs(songs.map((s, i) => ({
+              id: Date.now() + i,
+              link: s.youtubeLink,
+              name: s.songName || '',
+              fingerprint: s.fingerprint
+            })));
+            setForm({
+              department: data.department || '',
+              shift: data.shift || '',
+              gender: data.gender || ''
+            });
+            setMembers(data.members?.length > 0 ? data.members : ['']);
+            setEditMode(true);
+            setStep(2); // Go directly to details step
+          }
+        } catch (e) {
+          // Submission not found, clear saved ID
+          localStorage.removeItem(`dmart_submitted_${linkId}`);
+        }
+      } else {
+        // Load draft data if no submission
+        const saved = loadFormData(linkId);
+        if (saved) {
+          if (saved.verifiedSongs) setVerifiedSongs(saved.verifiedSongs);
+          if (saved.form) setForm(saved.form);
+          if (saved.members) setMembers(saved.members);
+          if (saved.step) setStep(saved.step);
+          if (saved.currentLink) setCurrentLink(saved.currentLink);
+        }
+      }
+    };
+    
+    checkExistingSubmission();
     verifyLink();
   }, [linkId]);
 
@@ -250,17 +297,26 @@ function SubmitForm() {
       formData.append('deviceId', deviceId);
       formData.append('songs', JSON.stringify(songsData));
 
-      await axios.post(`/api/submissions/${linkId}`, formData);
+      let response;
+      if (editMode && existingSubmission) {
+        // Update existing submission
+        response = await axios.put(`/api/submissions/edit/${existingSubmission._id}`, formData);
+        toast.success('✅ Your submission has been updated!');
+      } else {
+        // Create new submission
+        response = await axios.post(`/api/submissions/${linkId}`, formData);
+        toast.success(`🎉 Submission with ${verifiedSongs.length} song(s) submitted successfully!`);
+        
+        // Save submission ID so user can only edit from now on
+        if (response.data.submission?._id) {
+          saveSubmissionId(linkId, response.data.submission._id);
+          setExistingSubmission(response.data.submission);
+          setEditMode(true);
+        }
+      }
       
-      toast.success(`🎉 Submission with ${verifiedSongs.length} song(s) submitted successfully!`);
-      
-      // Clear everything
+      // Clear draft data but keep submission ID
       clearFormData(linkId);
-      setVerifiedSongs([]);
-      setForm({ department: '', shift: '', gender: '' });
-      setMembers(['']);
-      setCurrentLink('');
-      setStep(1);
     } catch (error) {
       toast.error(error.response?.data?.error || 'Submission failed');
     } finally {
@@ -365,7 +421,12 @@ function SubmitForm() {
         <div className="submit-card card">
           <div className="submit-header">
             <h1>🎵 DMart Umang</h1>
-            <p>Group Song Submission</p>
+            <p>{editMode ? 'Edit Your Submission' : 'Group Song Submission'}</p>
+            {editMode && (
+              <div className="edit-mode-banner">
+                ✅ You have already submitted. You can edit your submission below.
+              </div>
+            )}
             <button 
               className="btn btn-outline view-songs-btn" 
               onClick={loadAllSongs}
@@ -375,11 +436,13 @@ function SubmitForm() {
             </button>
           </div>
 
-          {/* Step indicator */}
-          <div className="step-indicator">
-            <div className={`step ${step >= 1 ? 'active' : ''}`}>1. Add Songs</div>
-            <div className={`step ${step >= 2 ? 'active' : ''}`}>2. Fill Details</div>
-          </div>
+          {/* Step indicator - hide in edit mode */}
+          {!editMode && (
+            <div className="step-indicator">
+              <div className={`step ${step >= 1 ? 'active' : ''}`}>1. Add Songs</div>
+              <div className={`step ${step >= 2 ? 'active' : ''}`}>2. Fill Details</div>
+            </div>
+          )}
 
           {/* STEP 1: Add Multiple Songs */}
           {step === 1 && (
@@ -509,9 +572,11 @@ function SubmitForm() {
               </div>
 
               <div className="form-actions">
-                <button type="button" className="btn btn-outline" onClick={() => setStep(1)}>← Back</button>
+                {!editMode && (
+                  <button type="button" className="btn btn-outline" onClick={() => setStep(1)}>← Back</button>
+                )}
                 <button type="submit" className="btn btn-primary submit-btn" disabled={submitting}>
-                  {submitting ? 'Submitting...' : `Submit ${verifiedSongs.length} Song${verifiedSongs.length > 1 ? 's' : ''}`}
+                  {submitting ? 'Saving...' : editMode ? '💾 Save Changes' : `Submit ${verifiedSongs.length} Song${verifiedSongs.length > 1 ? 's' : ''}`}
                 </button>
               </div>
             </form>

@@ -9,7 +9,8 @@ const {
   generateFingerprint, 
   compareFingerprints, 
   extractSongMetadata, 
-  compareMetadata 
+  compareMetadata,
+  checkIfMusicVideo 
 } = require('../utils/fingerprint');
 
 const router = express.Router();
@@ -244,6 +245,16 @@ router.post('/check-song/:linkId', upload.single('audioFile'), async (req, res) 
 
     if (!req.file && !youtubeLink) {
       return res.status(400).json({ error: 'Please provide a song link or upload a file' });
+    }
+
+    // ========== CHECK 0: Validate if it's a music video ==========
+    if (youtubeLink) {
+      const musicCheck = await checkIfMusicVideo(youtubeLink);
+      if (!musicCheck.isMusic) {
+        return res.status(400).json({ 
+          error: `❌ This doesn't appear to be a song. ${musicCheck.reason}. Please add a music/song video link.`
+        });
+      }
     }
 
     // Parse pending links (user's already added songs)
