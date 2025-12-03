@@ -163,20 +163,22 @@ function Submissions() {
             return (
               <div key={sub._id} className={`submission-card card ${isExpanded ? 'expanded' : ''}`}>
                 <div className="submission-header" onClick={() => toggleExpand(sub._id)}>
-                  <div className="submission-num">{idx + 1}</div>
-                  <div className="submission-info">
-                    <div className="submission-badges">
-                      <span className="badge dept">{sub.department}</span>
-                      <span className="badge shift">{sub.shift}</span>
-                      <span className="badge gender">{sub.gender}</span>
-                      <span className="badge songs-count">🎵 {songs.length} song{songs.length > 1 ? 's' : ''}</span>
+                  <div className="submission-header-top">
+                    <div className="submission-num">{idx + 1}</div>
+                    <div className="submission-info">
+                      <div className="submission-badges">
+                        <span className="badge dept">{sub.department}</span>
+                        <span className="badge shift">{sub.shift}</span>
+                        <span className="badge gender">{sub.gender}</span>
+                        <span className="badge songs-count">🎵 {songs.length}</span>
+                      </div>
+                      <div className="submission-members">
+                        {sub.members?.join(', ') || '-'}
+                      </div>
                     </div>
-                    <div className="submission-members">
-                      <strong>Members:</strong> {sub.members?.join(', ') || '-'}
-                    </div>
+                    <div className="submission-date">{new Date(sub.createdAt).toLocaleDateString()}</div>
+                    <div className="expand-icon">{isExpanded ? '▲' : '▼'}</div>
                   </div>
-                  <div className="submission-date">{new Date(sub.createdAt).toLocaleDateString()}</div>
-                  <div className="expand-icon">{isExpanded ? '▲' : '▼'}</div>
                 </div>
 
                 

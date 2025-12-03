@@ -1,42 +1,109 @@
 .admin-layout {
   display: flex;
   min-height: 100vh;
+  background: var(--gray-100);
 }
 
+/* Mobile Header */
+.mobile-header {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: var(--primary);
+  color: white;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.mobile-header h1 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.menu-btn, .mobile-logout {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+}
+
+/* Sidebar Overlay */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 199;
+}
+
+/* Sidebar */
 .sidebar {
-  width: 250px;
+  width: 260px;
   background: white;
   border-right: 1px solid var(--gray-200);
   display: flex;
   flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 200;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.05);
 }
 
 .sidebar-header {
-  padding: 24px;
+  padding: 20px;
   border-bottom: 1px solid var(--gray-200);
+  background: var(--primary);
+  color: white;
+  position: relative;
 }
 
 .sidebar-header h2 {
   font-size: 18px;
   font-weight: 700;
-  color: var(--primary);
+  margin-bottom: 4px;
 }
 
 .sidebar-header span {
   font-size: 12px;
-  color: var(--gray-500);
+  opacity: 0.9;
+}
+
+.close-sidebar {
+  display: none;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
 }
 
 .sidebar-nav {
   flex: 1;
   padding: 16px 12px;
+  overflow-y: auto;
 }
 
 .nav-link {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
+  padding: 14px 16px;
   border-radius: var(--radius);
   color: var(--gray-600);
   font-size: 14px;
@@ -71,18 +138,21 @@
   justify-content: center;
 }
 
+/* Main Content */
 .main-content {
   flex: 1;
-  padding: 32px;
+  margin-left: 260px;
+  padding: 24px;
+  min-height: 100vh;
   overflow-y: auto;
 }
 
 .page-header {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .page-header h1 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--gray-800);
 }
@@ -90,20 +160,39 @@
 .page-header p {
   color: var(--gray-500);
   margin-top: 4px;
+  font-size: 14px;
 }
 
+/* Mobile Responsive */
 @media (max-width: 768px) {
+  .mobile-header {
+    display: flex;
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+
   .sidebar {
-    width: 70px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
   }
-  .sidebar-header h2, .sidebar-header span, .nav-link span {
-    display: none;
+
+  .sidebar.open {
+    transform: translateX(0);
   }
-  .nav-link {
-    justify-content: center;
-    padding: 12px;
+
+  .close-sidebar {
+    display: block;
   }
+
   .main-content {
-    padding: 20px;
+    margin-left: 0;
+    padding: 16px;
+    padding-top: 72px;
+  }
+
+  .page-header h1 {
+    font-size: 18px;
   }
 }

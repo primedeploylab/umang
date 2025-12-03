@@ -4,28 +4,39 @@
   color: var(--gray-500);
 }
 
+/* Toolbar - Mobile First */
 .toolbar {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 16px;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
 .filters {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.filters .select { width: 160px; }
-.filters .input { width: 200px; }
+.filters .select,
+.filters .input {
+  width: 100%;
+}
 
 .export-btns {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+}
+
+.export-btns .btn {
+  flex: 1;
+  min-width: 100px;
+  justify-content: center;
 }
 
 /* Submissions List */
@@ -38,17 +49,20 @@
 .submission-card {
   overflow: hidden;
   transition: all 0.2s;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
 .submission-card.expanded {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
 .submission-header {
   display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -57,9 +71,15 @@
   background: var(--gray-50);
 }
 
+.submission-header-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .submission-num {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   background: var(--primary);
   color: white;
   border-radius: 50%;
@@ -67,28 +87,32 @@
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   flex-shrink: 0;
 }
 
 .submission-info {
   flex: 1;
+  min-width: 0;
 }
 
 .submission-badges {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 6px;
+  gap: 6px;
+  margin-bottom: 4px;
 }
 
 .submission-members {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--gray-600);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .submission-date {
-  font-size: 13px;
+  font-size: 11px;
   color: var(--gray-500);
   white-space: nowrap;
 }
@@ -96,15 +120,15 @@
 .expand-icon {
   color: var(--gray-400);
   font-size: 12px;
+  flex-shrink: 0;
 }
-
 
 /* Badges */
 .badge {
   display: inline-block;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 10px;
   font-weight: 500;
 }
 
@@ -115,61 +139,70 @@
 
 /* Expanded Details */
 .submission-details {
-  padding: 20px;
+  padding: 14px;
   background: var(--gray-50);
   border-top: 1px solid var(--gray-200);
 }
 
 .details-section h4 {
-  margin: 0 0 12px 0;
-  font-size: 14px;
+  margin: 0 0 10px 0;
+  font-size: 13px;
   color: var(--gray-700);
 }
 
 .songs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 12px;
-  margin-bottom: 20px;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
 .song-detail-card {
   display: flex;
-  gap: 12px;
-  padding: 12px;
+  gap: 10px;
+  padding: 10px;
   background: white;
   border-radius: 8px;
   border: 1px solid var(--gray-200);
 }
 
 .song-detail-num {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   background: var(--primary);
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   flex-shrink: 0;
 }
 
 .song-detail-info {
   flex: 1;
+  min-width: 0;
 }
 
 .song-detail-name {
   font-weight: 500;
+  font-size: 13px;
   color: var(--gray-800);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .song-detail-link {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--primary);
   text-decoration: none;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .song-detail-link:hover {
@@ -178,9 +211,16 @@
 
 .details-actions {
   display: flex;
-  gap: 12px;
-  padding-top: 16px;
+  gap: 10px;
+  padding-top: 14px;
   border-top: 1px solid var(--gray-200);
+}
+
+.details-actions .btn {
+  flex: 1;
+  justify-content: center;
+  padding: 10px;
+  font-size: 13px;
 }
 
 .btn-danger {
@@ -202,17 +242,16 @@
   bottom: 0;
   background: rgba(0,0,0,0.5);
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   z-index: 1000;
-  padding: 20px;
+  padding: 0;
 }
 
 .modal-content {
   background: white;
-  border-radius: 12px;
+  border-radius: 16px 16px 0 0;
   width: 100%;
-  max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -221,13 +260,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
+  padding: 16px;
   border-bottom: 1px solid var(--gray-200);
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1;
 }
 
 .modal-header h3 {
   margin: 0;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .modal-close {
@@ -236,24 +279,36 @@
   font-size: 24px;
   cursor: pointer;
   color: var(--gray-500);
+  padding: 4px;
 }
 
 .modal-body {
-  padding: 20px;
+  padding: 16px;
+}
+
+.modal-body .form-group {
+  margin-bottom: 14px;
 }
 
 .modal-body .form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: 1fr;
+  gap: 14px;
 }
 
 .modal-footer {
   display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding: 16px 20px;
+  gap: 10px;
+  padding: 16px;
   border-top: 1px solid var(--gray-200);
+  position: sticky;
+  bottom: 0;
+  background: white;
+}
+
+.modal-footer .btn {
+  flex: 1;
+  justify-content: center;
 }
 
 .member-edit-row, .song-edit-row {
@@ -266,7 +321,8 @@
 .song-edit-num {
   font-weight: 600;
   color: var(--primary);
-  min-width: 24px;
+  min-width: 20px;
+  font-size: 13px;
 }
 
 .btn-remove {
@@ -277,21 +333,95 @@
   height: 32px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
+  flex-shrink: 0;
 }
 
 .empty-state {
   text-align: center;
-  padding: 60px;
+  padding: 40px 20px;
   color: var(--gray-500);
 }
 
-@media (max-width: 768px) {
-  .toolbar { flex-direction: column; align-items: stretch; }
-  .filters { flex-direction: column; }
-  .filters .select, .filters .input { width: 100%; }
-  .export-btns { justify-content: center; }
-  .submission-header { flex-wrap: wrap; }
-  .songs-grid { grid-template-columns: 1fr; }
-  .modal-body .form-row { grid-template-columns: 1fr; }
+/* Tablet and Desktop */
+@media (min-width: 600px) {
+  .toolbar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+  }
+
+  .filters {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .filters .select { width: 150px; }
+  .filters .input { width: 180px; }
+
+  .export-btns .btn {
+    flex: none;
+  }
+
+  .submission-header {
+    flex-direction: row;
+    align-items: center;
+    padding: 16px 20px;
+  }
+
+  .submission-header-top {
+    flex: 1;
+  }
+
+  .badge {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+
+  .songs-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .modal-overlay {
+    align-items: center;
+    padding: 20px;
+  }
+
+  .modal-content {
+    border-radius: 12px;
+    max-width: 500px;
+  }
+
+  .modal-body .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .filters .select { width: 160px; }
+  .filters .input { width: 200px; }
+
+  .submission-header {
+    gap: 16px;
+  }
+
+  .submission-num {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .submission-members {
+    font-size: 13px;
+  }
+
+  .submission-date {
+    font-size: 13px;
+  }
+
+  .songs-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }

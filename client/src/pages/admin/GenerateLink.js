@@ -89,26 +89,28 @@ function GenerateLink() {
                     Created: {new Date(link.createdAt).toLocaleString()}
                   </span>
                 </div>
-                <div className="link-status">
-                  <span className={`badge ${link.isActive ? 'badge-success' : 'badge-danger'}`}>
-                    {link.isActive ? 'Active' : 'Inactive'}
-                  </span>
-                </div>
-                <div className="link-actions">
-                  <button 
-                    className="btn btn-outline btn-sm" 
-                    onClick={() => copyToClipboard(link.linkId)}
-                  >
-                    📋 Copy
-                  </button>
-                  {link.isActive && (
+                <div className="link-bottom">
+                  <div className="link-status">
+                    <span className={`badge ${link.isActive ? 'badge-success' : 'badge-danger'}`}>
+                      {link.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                  <div className="link-actions">
                     <button 
-                      className="btn btn-danger btn-sm" 
-                      onClick={() => handleDeactivate(link.linkId)}
+                      className="btn btn-outline btn-sm" 
+                      onClick={() => copyToClipboard(link.linkId)}
                     >
-                      Deactivate
+                      📋 Copy
                     </button>
-                  )}
+                    {link.isActive && (
+                      <button 
+                        className="btn btn-danger btn-sm" 
+                        onClick={() => handleDeactivate(link.linkId)}
+                      >
+                        Deactivate
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
