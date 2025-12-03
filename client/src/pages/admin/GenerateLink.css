@@ -1,0 +1,134 @@
+.generate-link-page .loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--gray-500);
+}
+
+.generate-section {
+  padding: 32px;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.generate-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+.generate-info h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.generate-info p {
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+.btn-lg {
+  padding: 14px 28px;
+  font-size: 16px;
+}
+
+.generate-section .btn-primary {
+  background: white;
+  color: var(--primary);
+}
+
+.generate-section .btn-primary:hover {
+  background: var(--gray-100);
+}
+
+.links-section {
+  padding: 24px;
+}
+
+.links-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--gray-700);
+}
+
+.links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.link-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--gray-50);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+}
+
+.link-item.inactive {
+  opacity: 0.6;
+}
+
+.link-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.link-url {
+  display: block;
+  font-size: 13px;
+  color: var(--primary);
+  background: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.link-date {
+  font-size: 12px;
+  color: var(--gray-500);
+}
+
+.link-status {
+  flex-shrink: 0;
+}
+
+.link-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.empty {
+  color: var(--gray-400);
+  font-size: 14px;
+  text-align: center;
+  padding: 40px;
+}
+
+@media (max-width: 768px) {
+  .generate-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .link-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .link-actions {
+    justify-content: center;
+  }
+}
