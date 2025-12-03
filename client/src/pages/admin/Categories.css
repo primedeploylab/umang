@@ -6,10 +6,10 @@
 
 /* Add Form - Mobile First */
 .add-form {
-  padding: 16px;
-  margin-bottom: 16px;
+  padding: 14px;
+  margin-bottom: 12px;
   background: white;
-  border-radius: var(--radius);
+  border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
@@ -23,16 +23,20 @@
 .form-row {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .form-row .select,
 .form-row .input {
   width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 8px;
 }
 
 .form-row .btn {
   width: 100%;
+  padding: 10px;
   justify-content: center;
 }
 
@@ -40,13 +44,13 @@
 .categories-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 12px;
 }
 
 .category-section {
-  padding: 16px;
+  padding: 14px;
   background: white;
-  border-radius: var(--radius);
+  border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
@@ -78,9 +82,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px;
+  padding: 10px 12px;
   background: var(--gray-50);
-  border-radius: var(--radius);
+  border-radius: 10px;
   border: 1px solid var(--gray-200);
   gap: 8px;
 }
@@ -105,9 +109,9 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   padding: 6px;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: background 0.2s;
 }
 
@@ -128,6 +132,8 @@
 .edit-row .input {
   flex: 1;
   min-width: 0;
+  padding: 8px 10px;
+  font-size: 13px;
 }
 
 .btn-sm {
@@ -142,10 +148,10 @@
   padding: 16px;
 }
 
-/* Tablet and Desktop */
-@media (min-width: 600px) {
+/* Tablet */
+@media (min-width: 480px) {
   .add-form {
-    padding: 20px;
+    padding: 16px;
   }
 
   .form-row {
@@ -154,7 +160,7 @@
   }
 
   .form-row .select {
-    width: 180px;
+    width: 160px;
   }
 
   .form-row .input {
@@ -167,6 +173,26 @@
 
   .categories-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .category-section {
+    padding: 16px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .add-form {
+    padding: 20px;
+  }
+
+  .form-row .select {
+    width: 180px;
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
   }
 
@@ -175,7 +201,7 @@
   }
 
   .category-item {
-    padding: 14px 16px;
+    padding: 12px 14px;
   }
 
   .category-name {
@@ -184,16 +210,7 @@
 }
 
 @media (min-width: 1024px) {
-  .add-form {
-    padding: 24px;
-  }
-
   .categories-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-  }
-
-  .category-section {
-    padding: 24px;
   }
 }
